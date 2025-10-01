@@ -1,0 +1,130 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 210 24% 16%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 210 24% 16%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 24% 16%;
+
+    --primary: 210 100% 44%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 100% 96%;
+    --secondary-foreground: 210 100% 26%;
+
+    --muted: 210 40% 96%;
+    --muted-foreground: 210 12% 47%;
+
+    --accent: 210 100% 50%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 210 30% 88%;
+    --input: 210 30% 88%;
+    --ring: 210 100% 44%;
+
+    /* Corporate theme colors */
+    --corporate-blue: 210 100% 44%;
+    --corporate-blue-light: 210 100% 50%;
+    --corporate-blue-dark: 210 100% 38%;
+    --corporate-bg: 210 17% 98%;
+    --corporate-accent: 210 100% 96%;
+    --corporate-shadow: 210 25% 84%;
+
+    /* Gradients */
+    --gradient-corporate: linear-gradient(135deg, hsl(var(--corporate-blue)), hsl(var(--corporate-blue-light)));
+    --gradient-subtle: linear-gradient(180deg, hsl(var(--background)), hsl(var(--corporate-bg)));
+
+    /* Shadows */
+    --shadow-soft: 0 2px 8px -2px hsl(var(--corporate-shadow) / 0.15);
+    --shadow-medium: 0 4px 16px -4px hsl(var(--corporate-shadow) / 0.2);
+    --shadow-elevated: 0 8px 32px -8px hsl(var(--corporate-shadow) / 0.25);
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 210 24% 10%;
+    --foreground: 210 17% 94%;
+
+    --card: 210 24% 12%;
+    --card-foreground: 210 17% 94%;
+
+    --popover: 210 24% 12%;
+    --popover-foreground: 210 17% 94%;
+
+    --primary: 210 100% 54%;
+    --primary-foreground: 210 24% 10%;
+
+    --secondary: 210 24% 16%;
+    --secondary-foreground: 210 17% 94%;
+
+    --muted: 210 24% 16%;
+    --muted-foreground: 210 12% 65%;
+
+    --accent: 210 100% 54%;
+    --accent-foreground: 210 24% 10%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 17% 94%;
+
+    --border: 210 24% 20%;
+    --input: 210 24% 20%;
+    --ring: 210 100% 54%;
+
+    /* Dark mode corporate colors */
+    --corporate-blue: 210 100% 54%;
+    --corporate-blue-light: 210 100% 60%;
+    --corporate-blue-dark: 210 100% 48%;
+    --corporate-bg: 210 24% 14%;
+    --corporate-accent: 210 24% 16%;
+    --corporate-shadow: 210 50% 5%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}

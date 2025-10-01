@@ -1,0 +1,646 @@
+openapi: 3.0.3
+info:
+  title: Enterprise Employee Announcement Tool API
+  description: API for managing enterprise announcements with approval workflows and audit logging
+  version: 1.0.0
+  contact:
+    name: Blue Herald Development Team
+    email: dev@blueherald.com
+
+servers:
+  - url: https://tenant.sharepoint.com/_api/web/lists
+    description: SharePoint REST API
+  - url: https://graph.microsoft.com/v1.0
+    description: Microsoft Graph API
+
+security:
+  - BearerAuth: []
+
+paths:
+  /announcements:
+    get:
+      summary: Get announcements
+      description: Retrieve announcements based on user permissions and filters
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [Draft, PendingApproval, Approved, Rejected, Sent, Archived]
+        - name: communicationType
+          in: query
+          schema:
+            type: string
+            enum: [PolicyUpdate, CompanyNews, TeamAnnouncement, BenefitsUpdate]
+        - name: createdBy
+          in: query
+          schema:
+            type: string
+            description: User UPN filter
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  announcements:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Announcement'
+                  totalCount:
+                    type: integer
+                  hasMore:
+                    type: boolean
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+    post:
+      summary: Create announcement
+      description: Create a new announcement (draft status)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAnnouncementRequest'
+      responses:
+        '201':
+          description: Announcement created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Announcement'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /announcements/{id}:
+    get:
+      summary: Get announcement by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Announcement'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+    put:
+      summary: Update announcement
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAnnouncementRequest'
+      responses:
+        '200':
+          description: Announcement updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Announcement'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+    delete:
+      summary: Delete announcement
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Announcement deleted successfully
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /announcements/{id}/submit:
+    post:
+      summary: Submit announcement for approval (PolicyUpdate only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Announcement submitted for approval
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApprovalWorkflow'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /announcements/{id}/send:
+    post:
+      summary: Send announcement to recipients
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Announcement sent successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sentDate:
+                    type: string
+                    format: date-time
+                  recipientCount:
+                    type: integer
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /approvals:
+    get:
+      summary: Get pending approvals for current user
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  approvals:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ApprovalWorkflow'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /approvals/{id}/approve:
+    post:
+      summary: Approve a pending announcement
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                decision:
+                  type: string
+                  enum: [Approved, Rejected]
+                rationale:
+                  type: string
+                  description: Required for rejections
+      responses:
+        '200':
+          description: Approval decision recorded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApprovalWorkflow'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /audit:
+    get:
+      summary: Get audit logs (admin only)
+      parameters:
+        - name: userId
+          in: query
+          schema:
+            type: string
+        - name: action
+          in: query
+          schema:
+            type: string
+        - name: startDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: endDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 1000
+            default: 100
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  auditLogs:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AuditLog'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /users/me:
+    get:
+      summary: Get current user profile and permissions
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Azure AD Bearer Token
+
+  schemas:
+    Announcement:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+          maxLength: 200
+        message:
+          type: string
+        communicationType:
+          type: string
+          enum: [PolicyUpdate, CompanyNews, TeamAnnouncement, BenefitsUpdate]
+        audience:
+          type: string
+          enum: [AllStaff, Department, Team]
+        tone:
+          type: string
+          enum: [Formal, Friendly, Urgent, Celebratory]
+        status:
+          type: string
+          enum: [Draft, PendingApproval, Approved, Rejected, Sent, Archived]
+        createdBy:
+          type: string
+          description: User UPN
+        createdDate:
+          type: string
+          format: date-time
+        modifiedBy:
+          type: string
+          description: User UPN
+        modifiedDate:
+          type: string
+          format: date-time
+        approvedBy:
+          type: string
+          description: User UPN
+          nullable: true
+        approvedDate:
+          type: string
+          format: date-time
+          nullable: true
+        sentDate:
+          type: string
+          format: date-time
+          nullable: true
+        retentionDate:
+          type: string
+          format: date-time
+        legalHold:
+          type: boolean
+        additionalFields:
+          type: object
+          additionalProperties: true
+      required:
+        - id
+        - title
+        - message
+        - communicationType
+        - audience
+        - tone
+        - status
+        - createdBy
+        - createdDate
+
+    CreateAnnouncementRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 200
+        message:
+          type: string
+        communicationType:
+          type: string
+          enum: [PolicyUpdate, CompanyNews, TeamAnnouncement, BenefitsUpdate]
+        audience:
+          type: string
+          enum: [AllStaff, Department, Team]
+        tone:
+          type: string
+          enum: [Formal, Friendly, Urgent, Celebratory]
+        additionalFields:
+          type: object
+          additionalProperties: true
+      required:
+        - title
+        - message
+        - communicationType
+        - audience
+        - tone
+
+    UpdateAnnouncementRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 200
+        message:
+          type: string
+        tone:
+          type: string
+          enum: [Formal, Friendly, Urgent, Celebratory]
+        additionalFields:
+          type: object
+          additionalProperties: true
+
+    ApprovalWorkflow:
+      type: object
+      properties:
+        id:
+          type: string
+        announcementId:
+          type: string
+        requestedBy:
+          type: string
+          description: User UPN
+        requestedDate:
+          type: string
+          format: date-time
+        assignedTo:
+          type: string
+          description: Manager UPN
+        status:
+          type: string
+          enum: [Pending, Approved, Rejected, Escalated]
+        decision:
+          type: string
+          enum: [Approved, Rejected]
+          nullable: true
+        decisionRationale:
+          type: string
+          nullable: true
+        decisionDate:
+          type: string
+          format: date-time
+          nullable: true
+        escalatedTo:
+          type: string
+          description: Senior manager UPN
+          nullable: true
+        escalationDate:
+          type: string
+          format: date-time
+          nullable: true
+        expirationDate:
+          type: string
+          format: date-time
+      required:
+        - id
+        - announcementId
+        - requestedBy
+        - requestedDate
+        - assignedTo
+        - status
+
+    AuditLog:
+      type: object
+      properties:
+        id:
+          type: string
+        announcementId:
+          type: string
+          nullable: true
+        userId:
+          type: string
+          description: User UPN
+        action:
+          type: string
+          enum: [Created, Modified, Submitted, Approved, Rejected, Sent, Viewed, Deleted]
+        timestamp:
+          type: string
+          format: date-time
+        ipAddress:
+          type: string
+        userAgent:
+          type: string
+        previousValues:
+          type: object
+          nullable: true
+        newValues:
+          type: object
+          nullable: true
+        sessionId:
+          type: string
+        correlationId:
+          type: string
+      required:
+        - id
+        - userId
+        - action
+        - timestamp
+        - sessionId
+        - correlationId
+
+    UserProfile:
+      type: object
+      properties:
+        upn:
+          type: string
+          description: User Principal Name
+        displayName:
+          type: string
+        email:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+            enum: [HRCoordinator, HRManager, Executive]
+        department:
+          type: string
+        managerId:
+          type: string
+          description: Manager UPN
+          nullable: true
+        permissions:
+          type: object
+          properties:
+            canCreateAnnouncements:
+              type: boolean
+            canApprovePolicy:
+              type: boolean
+            canSendWithoutApproval:
+              type: boolean
+            canViewAuditLogs:
+              type: boolean
+      required:
+        - upn
+        - displayName
+        - email
+        - roles
+        - permissions
+
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    field:
+                      type: string
+                    message:
+                      type: string
+
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Unauthorized"
+              message:
+                type: string
+                example: "Valid authentication token required"
+
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Forbidden"
+              message:
+                type: string
+                example: "Insufficient permissions for this operation"
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "NotFound"
+              message:
+                type: string
+                example: "The requested resource was not found"

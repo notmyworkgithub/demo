@@ -1,0 +1,75 @@
+{"version":"2.0.0","tasks":[
+    {
+        "label": "0️⃣ Demo Overview",
+        "type": "shell",
+        "command": "echo '🎬 COMPLETE DEMO WORKFLOW (45 minutes):' && echo '' && echo 'SETUP:' && echo '1️⃣ Start Blue Herald App' && echo '2️⃣ Initialize Spec-Kit' && echo '' && echo 'EXTRACTION:' && echo '3️⃣ Constitution Command' && echo '4️⃣ Analyze App Command' && echo '5️⃣ Clarify Gaps Command' && echo '' && echo 'CONTROLS:' && echo '6️⃣ Create Corporate Controls' && echo '7️⃣ Apply Controls Command' && echo '' && echo 'TRANSFORMATION:' && echo '8️⃣ Implementation Plan' && echo '9️⃣ Development Tasks' && echo '🔟 Consistency Analysis' && echo '' && echo 'CONCLUSION:' && echo '💬 Key Messages' && echo '' && echo 'Access via: Cmd+Shift+P → Tasks: Run Task'",
+        "group": "build"
+    },
+    {
+        "label": "1️⃣ Start Blue Herald",
+        "type": "shell",
+        "command": "echo '🎬 STEP 1: Starting Blue Herald Application...' && echo 'SAY: Let me show you what we built using vibe-coding' && cd blue-herald && npm run dev",
+        "group": "build",
+        "isBackground": true
+    },
+    {
+        "label": "2️⃣ Initialize Spec-Kit",
+        "type": "shell",
+        "command": "echo '🎬 STEP 2: Initializing Spec-Kit...' && echo 'SAY: Now lets extract specifications from our prototype' && cd blue-herald && specify init . --ai copilot --force && echo '✅ Spec-kit initialized!' && echo 'NEXT: Run task 3️⃣'",
+        "group": "build"
+    },
+    {
+        "label": "3️⃣ Constitution Command",
+        "type": "shell",
+        "command": "echo '📋 STEP 3: COPY THIS TO COPILOT CHAT:' && echo '' && echo '/constitution Create basic principles for a communication tool focusing on user experience and functionality' && echo '' && echo 'SAY: First, lets establish project principles' && echo 'NEXT: After running in Copilot Chat, run task 4️⃣'",
+        "group": "build"
+    },
+    {
+        "label": "4️⃣ Analyze App Command",
+        "type": "shell",
+        "command": "echo '📋 STEP 4: COPY THIS TO COPILOT CHAT:' && echo '' && echo '/specify Analyze this Employee Announcement Tool application and extract comprehensive specifications including:' && echo '- All communication types and their required fields' && echo '- Business rules for validation' && echo '- User workflows and interactions' && echo '- Current technical implementation' && echo '- Data storage and persistence approach' && echo '' && echo 'SAY: Now extract what our prototype does' && echo 'NEXT: After running in Copilot Chat, run task 5️⃣'",
+        "group": "build"
+    },
+    {
+        "label": "5️⃣ Clarify Gaps Command",
+        "type": "shell",
+        "command": "echo '📋 STEP 5: COPY THIS TO COPILOT CHAT:' && echo '' && echo '/clarify Focus on areas that might be unclear for enterprise deployment such as:' && echo '- Security and authentication requirements' && echo '- Data persistence and storage needs' && echo '- Approval and governance workflows' && echo '- Integration requirements with enterprise systems' && echo '- Scalability and performance considerations' && echo '' && echo 'SAY: Identify what is missing for enterprise deployment' && echo 'NEXT: After running in Copilot Chat, run task 6️⃣'",
+        "group": "build"
+    },
+    {
+        "label": "6️⃣ Create Corporate Controls",
+        "type": "shell",
+        "command": "echo '🎬 STEP 6: Creating Corporate Controls Document...' && cat > corporate-controls.md << 'EOF'\n# Corporate Development Controls\n\n## Authentication & Authorization\n- All applications MUST integrate with Active Directory/Entra ID\n- Role-based access control MUST be implemented\n\n## Data Governance\n- All business data MUST be stored in approved enterprise systems\n- No local storage or browser-only persistence\n\n## Approval Workflows\n- Policy communications MUST require management approval\n- All approvals MUST be logged and auditable\n\n## Audit & Compliance\n- All user actions MUST be logged to central audit system\n- Complete audit trail required for regulatory compliance\nEOF\necho '✅ Created corporate-controls.md' && echo 'SAY: These are our non-negotiable enterprise requirements' && echo 'ACTION: Open corporate-controls.md and show requirements' && echo 'NEXT: Run task 7️⃣'",
+        "group": "build"
+    },
+    {
+        "label": "7️⃣ Apply Controls Command",
+        "type": "shell",
+        "command": "echo '📋 STEP 7: COPY THIS TO COPILOT CHAT:' && echo '' && echo '/specify Create an enhanced version of the Employee Announcement Tool that preserves all existing business logic but incorporates the corporate controls from /Users/t/_repos/demo/corporate-controls.md. Specifically:' && echo '' && echo 'PRESERVE:' && echo '- Policy Update workflow requiring Policy Name and Effective Date' && echo '- All communication types (Policy Update, Company News, Team Announcement, Benefits Update)' && echo '- Dynamic form fields based on communication type' && echo '- Real-time preview functionality' && echo '- Tone selection and formatting' && echo '' && echo 'ADD ENTERPRISE CONTROLS:' && echo '- Active Directory authentication with role-based access' && echo '- SharePoint storage for all announcement data and audit trails' && echo '- Management approval workflows for Policy Updates' && echo '- Complete audit logging for all user actions' && echo '- Data retention and compliance features' && echo '- Security controls and testing requirements' && echo '' && echo 'Generate specifications that show exactly how to transform the prototype into an enterprise-ready application.' && echo '' && echo 'SAY: Apply corporate controls while preserving business logic' && echo 'NEXT: After running in Copilot Chat, run task 8️⃣'",
+        "group": "build"
+    },
+    {
+        "label": "8️⃣ Implementation Plan Command",
+        "type": "shell",
+        "command": "echo '📋 STEP 8: COPY THIS TO COPILOT CHAT:' && echo '' && echo '/plan Create a detailed implementation plan for transforming the current React prototype into an enterprise-ready application that:' && echo '- Maintains all existing UI/UX patterns and business logic' && echo '- Integrates with Microsoft 365 ecosystem (SharePoint, Teams, Active Directory)' && echo '- Implements the corporate controls while preserving user experience' && echo '- Provides clear migration strategy from prototype to production' && echo '- Includes testing, security, and deployment considerations' && echo '' && echo 'SAY: Create technical roadmap for transformation' && echo 'NEXT: After running in Copilot Chat, run task 9️⃣'",
+        "group": "build"
+    },
+    {
+        "label": "9️⃣ Development Tasks Command",
+        "type": "shell",
+        "command": "echo '📋 STEP 9: COPY THIS TO COPILOT CHAT:' && echo '' && echo '/tasks Break down the implementation plan into specific, actionable development tasks that:' && echo '- Preserve existing Policy Update business logic' && echo '- Add enterprise authentication and authorization' && echo '- Implement approval workflows and audit logging' && echo '- Integrate with SharePoint for data storage' && echo '- Include comprehensive testing strategy' && echo '- Address security and compliance requirements' && echo '' && echo 'SAY: Generate actionable development tasks' && echo 'NEXT: After running in Copilot Chat, run task 🔟'",
+        "group": "build"
+    },
+    {
+        "label": "🔟 Consistency Analysis Command",
+        "type": "shell",
+        "command": "echo '📋 STEP 10: COPY THIS TO COPILOT CHAT:' && echo '' && echo '/analyze Review the specifications, implementation plan, and task list for:' && echo '- Consistency between preserved business logic and enhanced requirements' && echo '- Coverage of all corporate controls in the implementation approach' && echo '- Alignment between user stories and technical tasks' && echo '- Completeness of the enterprise transformation strategy' && echo '' && echo 'SAY: Validate consistency and completeness across all artifacts' && echo 'NEXT: Use task 💬 for closing messages'",
+        "group": "build"
+    },
+    {
+        "label": "💬 Key Messages",
+        "type": "shell",
+        "command": "echo '🎯 KEY DEMO MESSAGES:' && echo '' && echo 'OPENING:' && echo 'I am going to show you how spec-kit serves as a control point between innovation and enterprise deployment' && echo '' && echo 'AFTER EXTRACTION:' && echo 'Spec-kit captured exactly what our prototype does - including what it doesnt do for enterprise' && echo '' && echo 'AFTER CONTROLS:' && echo 'These corporate controls are non-negotiable but we dont want to lose our validated business logic' && echo '' && echo 'CLOSING:' && echo 'This is the power of spec-kit as a control point - innovate fast, enhance systematically, deploy compliant' && echo '' && echo 'DEMO COMPLETE! 🎉'",
+        "group": "build"
+    }
+]}
